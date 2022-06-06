@@ -4,27 +4,59 @@ using UnityEngine;
 
 public class PerlinCubeGenScript : MonoBehaviour
 {
-    public float perlinNoise = 0f;
-    public float refiment = 0f;
-    public float multiplier = 0f;
-    public int cubes = 0;
+    public GameObject prefab;
+    public Vector3 size = new Vector3(5, 5, 5);
+    Vector3 pos = Vector3.zero;
+    float[] heights;
+    public float detail = 5;
+    public float fineDetail = 0.1f;
+    
+    
+    
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < cubes; i++)
+        heights = new float[(int)(size.x * size.z)];
+        for (int i = 0; i < (size.x * size.z); i++)
         {
-            for(int j = 0; j < cubes; j++)
+            Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
+        }
+    }
+
+    void SetHeights()
+    {
+        fineDetail = detail * 0.01f;
+        for (float z = 0; z < size.z; z++)
+        {
+            for(float x = 0; x < size.x; x++)
             {
-                perlinNoise = Mathf.PerlinNoise(i * refiment, j * refiment);
-                GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                go.transform.position = new Vector3(i, perlinNoise * multiplier, j);
+                heights[(int)x + (int)z * (int)size.x] =
+                    Mathf.PerlinNoise(x * fineDetail, z * fineDetail) * 10;
+                // GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                // go.transform.position = new Vector3(i, perlinNoise * multiplier, j);
             }
         }
+        PlaceCubes();
+    }
+
+    void PlaceCubes()
+    {
+        int i = 0;
+        for (pos.z = 0.5f; pos.z < size.z; pos.z++)
+        {
+            for (pos.x = 0.5f; pos.x < size.x; pos.x++)
+            {
+                pos.y = heights[(int)pos.x + (int)pos.z * (int)size.x];
+                transform.GetChild(i).localPosition = pos;
+                i++;
+            }
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        SetHeights();
     }
 }
