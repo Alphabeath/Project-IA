@@ -10,10 +10,6 @@ public class PerlinCubeGenScript : MonoBehaviour
     float[] heights;
     public float detail = 5;
     public float fineDetail = 0.1f;
-    public Vector3 offset = Vector3.zero;
-    Vector3 offsetInt = Vector3.zero;
-    Vector3 offsetFrac = Vector3.zero;
-    public float speed = 2;
     
     // jugador
 	GameObject player;
@@ -48,29 +44,20 @@ public class PerlinCubeGenScript : MonoBehaviour
 		playerPos.y = 0;
 		terrainPos = playerPos - initialDiff;
 		transform.position = terrainPos;
+		SetHeights();
     }
 
     void SetHeights()
     {
         fineDetail = detail * 0.01f;
-        offsetInt.x = Mathf.Floor(offset.x);
-        offsetInt.z = Mathf.Floor(offset.z);
-
-        offsetFrac = offset - offsetInt;
-
-        transform.position = Vector3.one;
-
-
-        //offset.z += Time.deltaTime * speed;
+        
         for (float z = 0; z < size.z; z++)
         {
             for (float x = 0; x < size.x; x++)
             {
                 heights[(int)x + (int)z * (int)size.x] =
-                    Mathf.Floor(Mathf.PerlinNoise(x * fineDetail + offsetInt.x * fineDetail, 
-												  z * fineDetail + offsetInt.z * fineDetail) * 10);
-                // GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                // go.transform.position = new Vector3(i, perlinNoise * multiplier, j);
+                    Mathf.Floor(Mathf.PerlinNoise(x * fineDetail + transform.position.x * fineDetail, 
+												  z * fineDetail + transform.position.z * fineDetail) * 10);                
             }
         }
         PlaceCubes();
@@ -93,7 +80,15 @@ public class PerlinCubeGenScript : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {	
-        SetHeights();
+    {
+		playerPos.x = Mathf.Floor( player.transform.position.x ); 
+		playerPos.z = Mathf.Floor( player.transform.position.z );
+		
+		terrainPos = playerPos - initialDiff;
+		if (transform.position != terrainPos)
+		{
+			transform.position = terrainPos;
+        	SetHeights();
+		}		
     }
 }
