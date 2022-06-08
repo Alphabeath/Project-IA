@@ -10,7 +10,13 @@ public class PerlinCubeGenScript : MonoBehaviour
     float[] heights;
     public float detail = 5;
     public float fineDetail = 0.1f;
-    
+    // jugador
+	GameObject player;
+	Vector3 terrainPos = Vector3.zero;
+	Vector3 playerPos = Vector3.zero;
+	Vector3 initialDiff = Vector3.zero;
+
+
     
     
     // Start is called before the first frame update
@@ -57,6 +63,24 @@ public class PerlinCubeGenScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		player = GameObject.FindGameObjectWithTag("Player");
+
+		player.SetActive(false) ;
+		player.transform.position = new Vector3(size.x * 0.5f, 10, size.z * 0.5f);
+		player.SetActive(true) ;
+
+		initialDiff = player.transform.position - transform.position;
+		initialDiff.y = 0;
+		initialDiff.x = Mathf.Floor( initialDiff.x );
+		initialDiff.z = Mathf.Floor( initialDiff.z );
+
+		playerPos.x = Mathf.Floor( player.transform.position.x ); 
+		playerPos.z = Mathf.Floor( player.transform.position.z );
+		playerPos.y = 0;
+		terrainPos = playerPos - initialDiff;
+		transform.position = terrainPos;
+		
+		
         SetHeights();
     }
 }
