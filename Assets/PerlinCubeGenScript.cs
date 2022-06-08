@@ -13,8 +13,15 @@ public class PerlinCubeGenScript : MonoBehaviour
     public Vector3 offset = Vector3.zero;
     Vector3 offsetInt = Vector3.zero;
     Vector3 offsetFrac = Vector3.zero;
-    public float speed = 1;
+    public float speed = 2;
     
+    // jugador
+	GameObject player;
+	Vector3 terrainPos = Vector3.zero;
+	Vector3 playerPos = Vector3.zero;
+	Vector3 initialDiff = Vector3.zero;
+
+
     
     
     // Start is called before the first frame update
@@ -25,6 +32,22 @@ public class PerlinCubeGenScript : MonoBehaviour
         {
             Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
         }
+		player = GameObject.FindGameObjectWithTag("Player");
+
+		player.SetActive(false) ;
+		player.transform.position = new Vector3(size.x * 0.5f, 15, size.z * 0.5f);
+		player.SetActive(true) ;
+
+		initialDiff = player.transform.position - transform.position;
+		initialDiff.y = 0;
+		initialDiff.x = Mathf.Floor( initialDiff.x );
+		initialDiff.z = Mathf.Floor( initialDiff.z );
+
+		playerPos.x = Mathf.Floor( player.transform.position.x ); 
+		playerPos.z = Mathf.Floor( player.transform.position.z );
+		playerPos.y = 0;
+		terrainPos = playerPos - initialDiff;
+		transform.position = terrainPos;
     }
 
     void SetHeights()
@@ -44,7 +67,8 @@ public class PerlinCubeGenScript : MonoBehaviour
             for (float x = 0; x < size.x; x++)
             {
                 heights[(int)x + (int)z * (int)size.x] =
-                    Mathf.Floor(Mathf.PerlinNoise(x * fineDetail + offsetInt.x * fineDetail, z * fineDetail + offsetInt.z * fineDetail) * 10);
+                    Mathf.Floor(Mathf.PerlinNoise(x * fineDetail + offsetInt.x * fineDetail, 
+												  z * fineDetail + offsetInt.z * fineDetail) * 10);
                 // GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 // go.transform.position = new Vector3(i, perlinNoise * multiplier, j);
             }
@@ -69,7 +93,7 @@ public class PerlinCubeGenScript : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {	
         SetHeights();
     }
 }
