@@ -38,7 +38,7 @@ public class PerlinCubeGenScript : MonoBehaviour
         transform.position = Vector3.one;
 
 
-        offset.z += Time.deltaTime * speed;
+        //offset.z += Time.deltaTime * speed;
         for (float z = 0; z < size.z; z++)
         {
             for (float x = 0; x < size.x; x++)
