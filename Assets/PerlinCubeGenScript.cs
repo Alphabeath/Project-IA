@@ -10,6 +10,10 @@ public class PerlinCubeGenScript : MonoBehaviour
     float[] heights;
     public float detail = 5;
     public float fineDetail = 0.1f;
+    public Vector3 offset = Vector3.zero;
+    Vector3 offsetInt = Vector3.zero;
+    Vector3 offsetFrac = Vector3.zero;
+    public float speed = 1;
     
     
     
@@ -26,12 +30,21 @@ public class PerlinCubeGenScript : MonoBehaviour
     void SetHeights()
     {
         fineDetail = detail * 0.01f;
+        offsetInt.x = Mathf.Floor(offset.x);
+        offsetInt.z = Mathf.Floor(offset.z);
+
+        offsetFrac = offset - offsetInt;
+
+        transform.position = Vector3.one;
+
+
+        offset.z += Time.deltaTime * speed;
         for (float z = 0; z < size.z; z++)
         {
-            for(float x = 0; x < size.x; x++)
+            for (float x = 0; x < size.x; x++)
             {
                 heights[(int)x + (int)z * (int)size.x] =
-                    Mathf.PerlinNoise(x * fineDetail, z * fineDetail) * 10;
+                    Mathf.Floor(Mathf.PerlinNoise(x * fineDetail + offsetInt.x * fineDetail, z * fineDetail + offsetInt.z * fineDetail) * 10);
                 // GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 // go.transform.position = new Vector3(i, perlinNoise * multiplier, j);
             }
