@@ -18,22 +18,21 @@ public class PerlinCubeGenScript : MonoBehaviour
 	Vector3 initialDiff = Vector3.zero;
 
 
-    
-    
+
+
     // Start is called before the first frame update
     void Start()
     {
+        //Altura de cubos
         heights = new float[(int)(size.x * size.z)];
         for (int i = 0; i < (size.x * size.z); i++)
         {
             Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
         }
-		player = GameObject.FindGameObjectWithTag("Player");
-
-		player.SetActive(false) ;
-		player.transform.position = new Vector3(size.x * 0.5f, 15, size.z * 0.5f);
-		player.SetActive(true) ;
-
+        player = GameObject.FindGameObjectWithTag("Player");
+        player.SetActive(false);
+        player.transform.position = new Vector3(size.x * 0.5f, 15, size.z * 0.5f);
+        player.SetActive(true);
 		initialDiff = player.transform.position - transform.position;
 		initialDiff.y = 0;
 		initialDiff.x = Mathf.Floor( initialDiff.x );
@@ -49,8 +48,9 @@ public class PerlinCubeGenScript : MonoBehaviour
 
     void SetHeights()
     {
+        // Agregar continuidad a perlin noise
         fineDetail = detail * 0.01f;
-        
+        // Se guarda en heights la posicion en eje y del cubo
         for (float z = 0; z < size.z; z++)
         {
             for (float x = 0; x < size.x; x++)
@@ -73,7 +73,7 @@ public class PerlinCubeGenScript : MonoBehaviour
                 pos.y = heights[(int)pos.x + (int)pos.z * (int)size.x];
                 transform.GetChild(i).localPosition = pos;
                 i++;
-            }
+            } 
         }
 
     }
