@@ -19,7 +19,6 @@ public class PerlinCubeGenScript : MonoBehaviour
 
 
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -65,6 +64,7 @@ public class PerlinCubeGenScript : MonoBehaviour
 
     void PlaceCubes()
     {
+        Vector3 pos_fija;
         int i = 0;
         for (pos.z = 0.5f; pos.z < size.z; pos.z++)
         {
@@ -72,6 +72,13 @@ public class PerlinCubeGenScript : MonoBehaviour
             {
                 pos.y = heights[(int)pos.x + (int)pos.z * (int)size.x];
                 transform.GetChild(i).localPosition = pos;
+
+                pos_fija.x = 28.5f;
+                pos_fija.y = 6;
+                pos_fija.z = 27.5f;
+
+                TrunkScript trunk_aux = FindObjectOfType<TrunkScript>();
+                trunk_aux.PutTrunk(pos_fija);
                 i++;
             } 
         }

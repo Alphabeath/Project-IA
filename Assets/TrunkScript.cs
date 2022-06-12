@@ -6,14 +6,10 @@ public class TrunkScript : MonoBehaviour
 {
     public GameObject prefab;
     public Vector3 size = new Vector3(1,1,1);
-    // Start is called before the first frame update
-    void Start()
+
+    public void PutTrunk(Vector3 pos)
     {
         Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
-        Vector3 pos;
-        pos.x = 28.5f;
-        pos.y = 6;
-        pos.z = 27.5f;
         transform.GetChild(0).position = pos;
     }
 
