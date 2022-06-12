@@ -14,7 +14,7 @@ public class TrunkScript : MonoBehaviour
         pos.x = 28.5f;
         pos.y = 6;
         pos.z = 27.5f;
-        transform.localPosition = pos;
+        transform.GetChild(0).position = pos;
     }
 
     // Update is called once per frame
