@@ -19,7 +19,6 @@ public class PerlinCubeGenScript : MonoBehaviour
 
 
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -44,6 +43,7 @@ public class PerlinCubeGenScript : MonoBehaviour
 		terrainPos = playerPos - initialDiff;
 		transform.position = terrainPos;
 		SetHeights();
+        PlaceTrees();
     }
 
     void SetHeights()
@@ -61,6 +61,7 @@ public class PerlinCubeGenScript : MonoBehaviour
             }
         }
         PlaceCubes();
+        UpdateTrees();
     }
 
     void PlaceCubes()
@@ -77,6 +78,28 @@ public class PerlinCubeGenScript : MonoBehaviour
         }
 
     }
+    void PlaceTrees()
+    {
+        TrunkScript trunk_aux = FindObjectOfType<TrunkScript>();
+        for (pos.z = 0.5f; pos.z < size.z; pos.z++)
+        {
+            for (pos.x = 0.5f; pos.x < size.x; pos.x++)
+            {
+                pos.y = heights[(int)pos.x + (int)pos.z * (int)size.x];
+                if ((pos.y > 4) && (Mathf.PerlinNoise(pos.x, pos.z) > 0.75))
+                {
+                    trunk_aux.PutTrunk(pos);
+                }
+            }
+        }
+
+    }
+
+    void UpdateTrees()
+    {
+        TrunkScript trunk_aux = FindObjectOfType<TrunkScript>();
+    }
+    
 
     // Update is called once per frame
     void Update()
