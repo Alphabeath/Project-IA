@@ -24,7 +24,7 @@ public class PerlinCubeGenScript : MonoBehaviour
     {
         //Altura de cubos
         heights = new float[(int)(size.x * size.z)];
-        for (int i = 0; i < (size.x * size.z); i++)
+        for (int i = 0; i < ((size.x * size.z)*2); i++)
         {
             Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
         }
@@ -74,8 +74,22 @@ public class PerlinCubeGenScript : MonoBehaviour
                 pos.y = heights[(int)pos.x + (int)pos.z * (int)size.x];
                 transform.GetChild(i).localPosition = pos;
                 i++;
+
             } 
         }
+        for (pos.z = 0.5f; pos.z < size.z; pos.z++)
+        {
+            for (pos.x = 0.5f; pos.x < size.x; pos.x++)
+            {
+                pos.y = heights[(int)pos.x + (int)pos.z * (int)size.x] - 1;
+                transform.GetChild(i).localPosition = pos;
+                i++;
+
+            }
+        }
+
+
+
 
     }
     void PlaceTrees()
