@@ -6,8 +6,8 @@ public class PerlinCubeGenScript : MonoBehaviour
 {
     public GameObject prefab;
     public Vector3 size = new Vector3(5, 5, 5);
-    Vector3 pos = Vector3.zero;
-    float[] heights;
+    public Vector3 pos = Vector3.zero;
+    public float[] heights;
     public float detail = 5;
     public float fineDetail = 0.1f;
     
@@ -16,7 +16,7 @@ public class PerlinCubeGenScript : MonoBehaviour
 	Vector3 terrainPos = Vector3.zero;
 	Vector3 playerPos = Vector3.zero;
 	Vector3 initialDiff = Vector3.zero;
-
+    public float[] perlinNoiseValues;
 
 
     // Start is called before the first frame update
@@ -24,6 +24,7 @@ public class PerlinCubeGenScript : MonoBehaviour
     {
         //Altura de cubos
         heights = new float[(int)(size.x * size.z)];
+        perlinNoiseValues = new float[(int)(size.x * size.z)];
         for (int i = 0; i < (size.x * size.z); i++)
         {
             Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
@@ -43,7 +44,9 @@ public class PerlinCubeGenScript : MonoBehaviour
 		terrainPos = playerPos - initialDiff;
 		transform.position = terrainPos;
 		SetHeights();
-        PlaceTrees();
+        //PlaceTrees();
+        TrunkScript trunk_aux = FindObjectOfType<TrunkScript>();
+        trunk_aux.PutTrunks();
     }
 
     void SetHeights()
@@ -55,13 +58,15 @@ public class PerlinCubeGenScript : MonoBehaviour
         {
             for (float x = 0; x < size.x; x++)
             {
-                heights[(int)x + (int)z * (int)size.x] =
-                    Mathf.Floor(Mathf.PerlinNoise(x * fineDetail + transform.position.x * fineDetail, 
-												  z * fineDetail + transform.position.z * fineDetail) * 10);                
+                var indGrid = (int)x + (int)z * (int)size.x;
+                var perlinValue = Mathf.PerlinNoise(x * fineDetail + transform.position.x * fineDetail,
+                                                  z * fineDetail + transform.position.z * fineDetail);
+                perlinNoiseValues[indGrid] = perlinValue;
+                heights[indGrid] = Mathf.Floor(perlinValue * 10);                
             }
         }
         PlaceCubes();
-        UpdateTrees();
+        //UpdateTrees();
     }
 
     void PlaceCubes()
@@ -85,8 +90,10 @@ public class PerlinCubeGenScript : MonoBehaviour
         {
             for (pos.x = 0.5f; pos.x < size.x; pos.x++)
             {
-                pos.y = heights[(int)pos.x + (int)pos.z * (int)size.x];
-                if ((pos.y > 4) && (Mathf.PerlinNoise(pos.x, pos.z) > 0.75))
+                var indGrid = (int)pos.x + (int)pos.z * (int)size.x;
+                pos.y = heights[indGrid];
+                var perlinValue = perlinNoiseValues[indGrid];
+                if ((pos.y > 4) && (perlinValue > 0.75))
                 {
                     trunk_aux.PutTrunk(pos);
                 }
@@ -112,6 +119,8 @@ public class PerlinCubeGenScript : MonoBehaviour
 		{
 			transform.position = terrainPos;
         	SetHeights();
-		}		
+            TrunkScript trunk_aux = FindObjectOfType<TrunkScript>();
+            trunk_aux.PutTrunks();
+        }		
     }
 }
